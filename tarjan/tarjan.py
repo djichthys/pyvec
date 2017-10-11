@@ -20,7 +20,7 @@ class Connected_Component():
     def __init__(self, node_list, name=None, edges=None): 
         self._name = name 
         self.node_list = node_list 
-        self.edges = edges 
+        self._edges = edges 
 
     @property
     def name( self ): 
@@ -29,6 +29,20 @@ class Connected_Component():
     @name.setter
     def name( self, val ):
         self._name = val 
+ 
+    @property
+    def edges(self):
+        return self._edges 
+
+
+    @edges.setter
+    def edges(self, edge):
+        if type(edge) is list:
+            self._edges = edge
+        elif type(edge) is Connected_Component : 
+            self._edges.append(edge)
+        else :
+            raise TypeError 
 
 
     def create_id( self, new_name=None ):
@@ -50,7 +64,7 @@ class Connected_Component():
                     except StopIteration: 
                         break
             elif (type(new_name[0]) is int 
-                   or type(new_name[0]) is float):
+                  or type(new_name[0]) is float):
                 generated_id = str(iterator.__next__())
                 while(True):
                     try:
@@ -72,7 +86,48 @@ class Connected_Component():
             except AttributeError : 
                 raise AttributeError("attr - name does not exist. Only custom class type allowed is type Graph_Node") 
         return generated_id 
-                
+
+
+
+class Node_to_SCC_Map():
+    """
+    Worker Class to help with connecting strongly connected regions
+    
+    """
+    def __init__(self, scc):
+        self.scc = {} 
+        if type(scc) is list :
+            for supernode in scc:
+                for node in supernode.node_list:
+                    self.scc[node] = supernode
+        elif type(scc) is Connected_Component :
+            for node in scc.node_list : 
+                self.scc[node] = scc
+
+def connect_super_nodes( super_node_list ):
+    """
+    Function to connect between strongly connected regions
+    """
+    reverse_map = Node_to_SCC_Map(super_node_list)
+
+    for s_node in super_node_list: 
+        for node in s_node.node_list:
+            for dest in node.successors :
+                worker = reverse_map.scc[dest]
+                if (worker != s_node) :
+                    if s_node.edges == None :
+                        s_node.edges = [worker] 
+                    elif worker not in s_node.edges :
+                        s_node.edges.append(worker)
+
+        #Some SCCs will only have incoming edges and no outgoing edges
+        if s_node.edges == None :
+            s_node.edges = [] 
+
+    return super_node_list
+
+
+
 
 def strongly_connected_components( graph ):
     """
@@ -151,10 +206,10 @@ init_list[0].successors = [init_list[1]]
 init_list[1].successors = [init_list[2]]
 init_list[2].successors = [init_list[0]]
 init_list[3].successors = [init_list[1],init_list[2],init_list[4]] 
-init_list[4].successors = [init_list[3],init_list[3]]
+init_list[4].successors = [init_list[3],init_list[5]]
 init_list[5].successors = [init_list[2],init_list[6]]
 init_list[6].successors = [init_list[5]]
-init_list[7].successors = [init_list[7],init_list[6],init_list[7]]
+init_list[7].successors = [init_list[4],init_list[6],init_list[7]]
 
 for i in init_list:
     edges = [] 
@@ -166,11 +221,20 @@ for i in init_list:
 
 
 scc_list = strongly_connected_components(init_list)
+scc =  connect_super_nodes( scc_list )
 i = 0 
-for idx in scc_list : 
+print("================================")
+print("Strongly connected components")
+print("================================")
+for idx in scc: 
     print("supernode[{0}] = {1}".format(i , idx.name))
     for idx_j in idx.node_list:
         print("components = {0}".format(idx_j.name))
+
+    j = 0 
+    for idx_j in idx.edges:
+        print("supernode-connections[{0}] = {1}".format(j , idx_j.name))
+
     print("================================")
     i += 1 
 
