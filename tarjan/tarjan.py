@@ -194,47 +194,46 @@ def strongly_connected_components( graph ):
 
 
 
-
-#unit-test
-#also a primer on how to use the classes and the function
-init_list = []
-for i in range(1,9,1):
-    init_list.append(Graph_Node("{0:02d}".format(i)))
-
-
-init_list[0].successors = [init_list[1]]
-init_list[1].successors = [init_list[2]]
-init_list[2].successors = [init_list[0]]
-init_list[3].successors = [init_list[1],init_list[2],init_list[4]]
-init_list[4].successors = [init_list[3],init_list[5]]
-init_list[5].successors = [init_list[2],init_list[6]]
-init_list[6].successors = [init_list[5]]
-init_list[7].successors = [init_list[4],init_list[6],init_list[7]]
-
-for i in init_list:
-    edges = []
-    for j in i.successors :
-        edges.append(j.name)
-    print("name = {0}. type = {1:s}. edges-to {2}".format(i.name,str(type(i.name)), edges))
-
-
-
-
-scc_list = strongly_connected_components(init_list)
-scc =  connect_super_nodes( scc_list )
-i = 0
-print("================================")
-print("Strongly connected components")
-print("================================")
-for idx in scc:
-    print("supernode[{0}] = {1}".format(i , idx.name))
-    for idx_j in idx.node_list:
-        print("components = {0}".format(idx_j.name))
-
-    j = 0
-    for idx_j in idx.edges:
-        print("supernode-connections[{0}] = {1}".format(j , idx_j.name))
-
+if __name__ == "__main__" :
+    #unit-test
+    #also a primer on how to use the classes and the function
+    init_list = []
+    for i in range(1,9,1):
+        init_list.append(Graph_Node("{0:02d}".format(i)))
+    
+    
+    init_list[0].successors = [init_list[1]]
+    init_list[1].successors = [init_list[2]]
+    init_list[2].successors = [init_list[0]]
+    init_list[3].successors = [init_list[1],init_list[2],init_list[4]]
+    init_list[4].successors = [init_list[3],init_list[5]]
+    init_list[5].successors = [init_list[2],init_list[6]]
+    init_list[6].successors = [init_list[5]]
+    init_list[7].successors = [init_list[4],init_list[6],init_list[7]]
+    
+    for i in init_list:
+        edges = []
+        for j in i.successors :
+            edges.append(j.name)
+        print("name = {0}. type = {1:s}. edges-to {2}".format(i.name,str(type(i.name)), edges))
+    
+    
+    
+    
+    scc_list = strongly_connected_components(init_list)
+    scc =  connect_super_nodes( scc_list )
+    i = 0
     print("================================")
-    i += 1
-
+    print("Strongly connected components")
+    print("================================")
+    for idx in scc:
+        print("supernode[{0}] = {1}".format(i , idx.name))
+        for idx_j in idx.node_list:
+            print("components = {0}".format(idx_j.name))
+    
+        j = 0
+        for idx_j in idx.edges:
+            print("supernode-connections[{0}] = {1}".format(j , idx_j.name))
+    
+        print("================================")
+        i += 1
