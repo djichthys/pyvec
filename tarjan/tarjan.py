@@ -200,8 +200,8 @@ if __name__ == "__main__" :
     init_list = []
     for i in range(1,9,1):
         init_list.append(Graph_Node("{0:02d}".format(i)))
-    
-    
+
+
     init_list[0].successors = [init_list[1]]
     init_list[1].successors = [init_list[2]]
     init_list[2].successors = [init_list[0]]
@@ -210,16 +210,16 @@ if __name__ == "__main__" :
     init_list[5].successors = [init_list[2],init_list[6]]
     init_list[6].successors = [init_list[5]]
     init_list[7].successors = [init_list[4],init_list[6],init_list[7]]
-    
+
     for i in init_list:
         edges = []
         for j in i.successors :
             edges.append(j.name)
         print("name = {0}. type = {1:s}. edges-to {2}".format(i.name,str(type(i.name)), edges))
-    
-    
-    
-    
+
+
+
+
     scc_list = strongly_connected_components(init_list)
     scc =  connect_super_nodes( scc_list )
     i = 0
@@ -230,10 +230,42 @@ if __name__ == "__main__" :
         print("supernode[{0}] = {1}".format(i , idx.name))
         for idx_j in idx.node_list:
             print("components = {0}".format(idx_j.name))
-    
+
         j = 0
         for idx_j in idx.edges:
             print("supernode-connections[{0}] = {1}".format(j , idx_j.name))
-    
+
         print("================================")
         i += 1
+
+
+    #show diagrammatically
+    import graphviz as gv
+    orig_graph = gv.Digraph(name="original graph", format="png")
+    for node in init_list:
+        orig_graph.node(node.name)
+        for edge in node.successors:
+            orig_graph.edge(node.name,edge.name)
+
+    orig_graph.render("img/orig_graph")
+
+    scc_img = gv.Digraph(name="connected components", format="png")
+    for supernode in scc:
+        cluster_name = "cluster_" + supernode.name
+        with scc_img.subgraph(name=cluster_name) as subg :
+            subg.attr(style="filled")
+            subg.attr(color="lightgrey")
+            subg.node_attr.update(style="filled", color="white")
+            subg.attr(label="scc_" + supernode.name)
+
+            for node in supernode.node_list:
+                subg.node(node.name)
+
+
+    #add edges to the nodes already in each
+    #subgraph in main graph description
+    for src in init_list:
+        for dest in src.successors:
+            scc_img.edge(src.name,dest.name)
+
+    scc_img.render("img/scc_img")
