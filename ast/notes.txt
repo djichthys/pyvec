@@ -1,0 +1,15 @@
+import ast 
+#
+# 1. Travel node and create stack of interesting nodes 
+#       1.1 create 3-D lattice of interesting nodes
+#	    ie Function definitions , loop-ranges, loop-body defs & associated variable dependencies
+#
+# 2. For each function 
+#       do tarjan() + codegen annotation algorithm () 
+# 3. create kernels 
+#
+# 4. loop-fusion (neighbouring type node aggregator) 
+# 5. cost analysis + selection of device-jit-variants
+# 6. final execution
+#
+

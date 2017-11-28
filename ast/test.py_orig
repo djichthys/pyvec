@@ -1,0 +1,17 @@
+def func_sub(a,b):
+	return a - b 
+
+
+def func_add(a,b):
+	def my_add_recur( _c, _d) :
+		return _c + _d 
+	return my_add_recur(a,b)
+
+def func_mult(a,b):
+	for i in range(0,4,10): 
+		a += i 
+	return a * b 
+
+def func_div(a,b):
+	return a/b 
+
