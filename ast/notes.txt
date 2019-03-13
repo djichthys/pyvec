@@ -1,4 +1,3 @@
-import ast 
 #
 # 1. Travel node and create stack of interesting nodes 
 #       1.1 create 3-D lattice of interesting nodes
